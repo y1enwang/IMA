@@ -1,0 +1,221 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0a0a0d;
+  color: #ececec;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+main {
+  width: 90%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 50px 0;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-size: 34px;
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+
+#sentence1,
+#sentence2 {
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+#sentence1 {
+  margin-bottom: 30px;
+}
+
+#sentence2 {
+  display: none;
+  margin-top: 30px;
+}
+
+#hint {
+  color: #777;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+#room {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  background:
+    linear-gradient(to bottom, #171924 0%, #11131b 65%, #090a0e 65%);
+  border: 1px solid #2b2b31;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+}
+
+.moon {
+  position: absolute;
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: #d9d9cf;
+  top: 50px;
+  left: 80px;
+  box-shadow: 0 0 35px rgba(230, 230, 210, 0.18);
+}
+
+.bed {
+  position: absolute;
+  left: 90px;
+  bottom: 45px;
+  width: 320px;
+  height: 100px;
+}
+
+.blanket {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 320px;
+  height: 75px;
+  background: #3b4250;
+  border-radius: 8px 8px 0 0;
+}
+
+.pillow {
+  position: absolute;
+  left: 35px;
+  top: 4px;
+  width: 95px;
+  height: 42px;
+  background: #b7b7ae;
+  border-radius: 50%;
+}
+
+.child-head {
+  position: absolute;
+  left: 135px;
+  bottom: 111px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #c7b39a;
+}
+
+#corner {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 190px;
+  height: 100%;
+  background: linear-gradient(to left, #020203, #08090d);
+  cursor: pointer;
+}
+
+#corner span {
+  position: absolute;
+  bottom: 18px;
+  width: 100%;
+  left: 0;
+  color: #444;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+#lady {
+  position: absolute;
+  width: 120px;
+  height: 300px;
+  right: 25px;
+  bottom: 20px;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.hair {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 90px;
+  height: 165px;
+  background: #050505;
+  border-radius: 45px 45px 18px 18px;
+  z-index: 2;
+}
+
+.face {
+  position: absolute;
+  top: 55px;
+  left: 34px;
+  width: 52px;
+  height: 68px;
+  border-radius: 45%;
+  background: #d8d3c9;
+  z-index: 3;
+}
+
+.eye {
+  position: absolute;
+  top: 28px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b50000;
+  box-shadow: 0 0 10px #c00000;
+}
+
+.eye-left {
+  left: 12px;
+}
+
+.eye-right {
+  right: 12px;
+}
+
+.dress {
+  position: absolute;
+  left: 25px;
+  bottom: 0;
+  width: 72px;
+  height: 195px;
+  background: #111116;
+  clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+  z-index: 1;
+}
+
+.hand {
+  position: absolute;
+  top: 150px;
+  left: 2px;
+  font-size: 27px;
+  transform-origin: bottom right;
+  z-index: 4;
+}
+
+.wave {
+  animation: wave 0.55s infinite alternate ease-in-out;
+}
+
+@keyframes wave {
+  from {
+    transform: rotate(-18deg);
+  }
+
+  to {
+    transform: rotate(22deg);
+  }
+}
+
+.blackout #room {
+  background: #030304;
+}
+
+.blackout .moon,
+.blackout .bed,
+.blackout .child-head {
+  opacity: 0.2;
+}
