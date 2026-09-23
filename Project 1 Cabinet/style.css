@@ -1,0 +1,80 @@
+body {
+  margin: 0;
+  background: white;
+  color: black;
+  font-family: Arial, sans-serif;
+}
+
+main {
+  width: 700px;
+  max-width: 90%;
+  margin: 60px auto;
+  text-align: center;
+}
+
+h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+p {
+  line-height: 1.5;
+}
+
+.choices {
+  margin: 30px 0 10px;
+}
+
+button {
+  background: white;
+  color: black;
+  border: 1px solid black;
+  padding: 10px 16px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: black;
+  color: white;
+}
+
+.choice.selected {
+  background: black;
+  color: white;
+}
+
+#mysteryBox {
+  margin-top: 20px;
+  padding: 15px 25px;
+}
+
+#status {
+  min-height: 24px;
+  margin-top: 20px;
+}
+
+#result {
+  display: none;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid black;
+}
+
+#artworkImage {
+  width: 400px;
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+#artworkTitle {
+  margin-top: 20px;
+}
+
+#artworkLink {
+  display: inline-block;
+  margin-top: 10px;
+  color: black;
+}
