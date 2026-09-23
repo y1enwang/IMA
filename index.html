@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cabinet of Curiosities</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main>
+
+    <h1>Cabinet of Curiosities</h1>
+
+    <p>
+      Choose one thing you are curious about.
+      Then open the mystery box.
+    </p>
+
+    <div class="choices">
+      <button class="choice" data-word="bird">Birds</button>
+      <button class="choice" data-word="mushroom">Mushrooms</button>
+      <button class="choice" data-word="flower">Flowers</button>
+      <button class="choice" data-word="mask">Masks</button>
+    </div>
+
+    <p id="selectedWord">
+      Selected: none
+    </p>
+
+    <button id="mysteryBox">
+      ? Open Mystery Box
+    </button>
+
+    <p id="status"></p>
+
+    <section id="result">
+
+      <img id="artworkImage" src="" alt="Artwork from The Met">
+
+      <h2 id="artworkTitle"></h2>
+
+      <p id="artworkDate"></p>
+
+      <p id="artworkMedium"></p>
+
+      <a id="artworkLink" href="#" target="_blank">
+        View on The Met website
+      </a>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
