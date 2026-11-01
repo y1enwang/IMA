@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pong</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #000; color: #fff;
+      font-family: monospace; text-align: center; padding: 28px 12px; }
+    h1 { font-size: 28px; font-weight: normal; margin: 10px 0 20px; }
+    canvas { display: block; width: 100%; max-width: 600px; height: auto;
+      background: #000; border: 2px solid #fff; margin: 0 auto; }
+    p { font-size: 13px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <h1>pong</h1>
+  <canvas id="game" width="600" height="400"></canvas>
+  <p id="role">connecting...</p>
+  <p id="status">waiting for players...</p>
+  <p>left: W / S &nbsp;&nbsp; right: ↑ / ↓</p>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const ctx = document.getElementById("game").getContext("2d");
+    const held = new Set();
+    let role = "spectator";
+    let lastMove = 0;
+
+    socket.on("role", (side) => {
+      role = side;
+      document.getElementById("role").textContent = "you are: " + side;
+      lastMove = 0;
+    });
+
+    socket.on("state", (game) => {
+      document.getElementById("status").textContent =
+        game.playing ? "playing" : "waiting for two players...";
+      draw(game);
+    });
+
+    function draw(game) {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, 600, 400);
+      ctx.fillStyle = "#fff";
+
+      // Center line
+      for (let y = 0; y < 400; y += 24) ctx.fillRect(299, y, 2, 12);
+
+      // Score
+      ctx.font = "32px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(game.score.left, 235, 48);
+      ctx.fillText(game.score.right, 365, 48);
+
+      // Paddles and ball
+      ctx.fillRect(20, game.paddles.left, 10, 80);
+      ctx.fillRect(570, game.paddles.right, 10, 80);
+      ctx.beginPath();
+      ctx.arc(game.ball.x, game.ball.y, 7, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function sendMove() {
+      let direction = 0;
+      if (role === "left") direction = Number(held.has("s")) - Number(held.has("w"));
+      if (role === "right") direction = Number(held.has("ArrowDown")) - Number(held.has("ArrowUp"));
+      if (direction !== lastMove) {
+        lastMove = direction;
+        socket.emit("move", direction); // Client-side emit
+      }
+    }
+
+    function handleKey(e, down) {
+      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      if (!["w", "s", "ArrowUp", "ArrowDown"].includes(key)) return;
+      e.preventDefault();
+      if (down) held.add(key);
+      else held.delete(key);
+      sendMove();
+    }
+    document.addEventListener("keydown", e => handleKey(e, true));
+    document.addEventListener("keyup", e => handleKey(e, false));
+    window.addEventListener("blur", () => { held.clear(); sendMove(); });
+  </script>
+</body>
+</html>
