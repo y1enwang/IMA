@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Mini Notes</title>
+</head>
+
+<body>
+
+  <h1>My Mini Notes</h1>
+
+  <input id="note" placeholder="Write a note">
+
+  <button onclick="saveNote()">Save</button>
+  <button onclick="loadNotes()">Load Notes</button>
+
+  <p id="message"></p>
+  <ul id="notes"></ul>
+
+  <script>
+    // Send a POST request
+    async function saveNote() {
+
+      const note = document.getElementById("note").value;
+
+      const response = await fetch("/new-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ note: note })
+      });
+
+      const result = await response.json();
+
+      document.getElementById("message").textContent =
+        result.message;
+
+      if (response.ok) {
+        document.getElementById("note").value = "";
+        loadNotes();
+      }
+    }
+
+    // Send a GET request
+    async function loadNotes() {
+
+      const response = await fetch("/data");
+      const data = await response.json();
+
+      const list = document.getElementById("notes");
+      list.innerHTML = "";
+
+      data.forEach((note) => {
+        const item = document.createElement("li");
+        item.textContent = note;
+        list.appendChild(item);
+      });
+    }
+
+    loadNotes();
+  </script>
+
+</body>
+</html>
