@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Drawing</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+    }
+
+    canvas {
+      border: 1px solid black;
+      width: 100%;
+      max-width: 600px;
+      touch-action: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Live Drawing</h1>
+<p>Draw together!</p>
+
+<canvas id="canvas" width="600" height="350"></canvas>
+
+<p>
+  <button onclick="clearCanvas()">Clear</button>
+</p>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  const socket = io();
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  let drawing = false;
+  let lastPoint = null;
+
+  // Get mouse coordinates
+  function getPoint(event) {
+    const rect = canvas.getBoundingClientRect();
+
+    return {
+      x: (event.clientX - rect.left) * canvas.width / rect.width,
+      y: (event.clientY - rect.top) * canvas.height / rect.height
+    };
+  }
+
+  // Start drawing
+  canvas.addEventListener("pointerdown", (event) => {
+    drawing = true;
+    canvas.setPointerCapture(event.pointerId);
+    lastPoint = getPoint(event);
+
+    socket.emit("draw", {
+      x1: lastPoint.x,
+      y1: lastPoint.y,
+      x2: lastPoint.x + 0.1,
+      y2: lastPoint.y + 0.1
+    });
+  });
+
+  // Move the pen
+  canvas.addEventListener("pointermove", (event) => {
+    if (!drawing) return;
+
+    const point = getPoint(event);
+
+    socket.emit("draw", {
+      x1: lastPoint.x,
+      y1: lastPoint.y,
+      x2: point.x,
+      y2: point.y
+    });
+
+    lastPoint = point;
+  });
+
+  // Stop drawing
+  function stopDrawing() {
+    drawing = false;
+    lastPoint = null;
+  }
+
+  canvas.addEventListener("pointerup", stopDrawing);
+  canvas.addEventListener("pointercancel", stopDrawing);
+
+  // Receive drawing data
+  socket.on("draw", (line) => {
+    ctx.beginPath();
+    ctx.moveTo(line.x1, line.y1);
+    ctx.lineTo(line.x2, line.y2);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.stroke();
+  });
+
+  // Clear all canvases
+  function clearCanvas() {
+    socket.emit("clear");
+  }
+
+  socket.on("clear", () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+</script>
+
+</body>
+</html>
