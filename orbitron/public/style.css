@@ -1,0 +1,169 @@
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #02050f;
+      color: #00d9ff;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Subtle Animated TRON Digital Grid Background */
+    .bg-grid {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: 
+        linear-gradient(90deg, rgba(0, 217, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(rgba(0, 217, 255, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveGrid 12s linear infinite;
+      z-index: -2;
+    }
+
+    /* Subtle Glow Ambient Background Pulse */
+    .bg-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 500px;
+      background: radial-gradient(circle, rgba(0, 162, 255, 0.12) 0%, rgba(2, 5, 15, 0) 70%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    @keyframes moveGrid {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 40px; }
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 900;
+      margin: 10px 0 20px;
+      color: #ffffff;
+      text-shadow: 
+        0 0 10px #00d9ff,
+        0 0 20px #00d9ff,
+        0 0 40px #0077ff;
+      letter-spacing: 6px;
+    }
+
+    .canvas-container {
+      position: relative;
+      display: inline-block;
+      margin: 0 auto;
+      border: 2px solid #00d9ff;
+      box-shadow: 
+        0 0 15px rgba(0, 217, 255, 0.5),
+        inset 0 0 20px rgba(0, 217, 255, 0.25);
+      background: rgba(0, 8, 20, 0.9);
+      border-radius: 4px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      background: transparent;
+    }
+
+    p {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      margin: 14px 0;
+      color: #88e7ff;
+      text-shadow: 0 0 8px rgba(0, 217, 255, 0.6);
+    }
+
+    button {
+      padding: 12px 24px;
+      border: 1px solid #00d9ff;
+      background: rgba(0, 25, 50, 0.7);
+      color: #00d9ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      border-radius: 2px;
+    }
+
+    button:hover:not(:disabled) {
+      background: #00d9ff;
+      color: #000;
+      box-shadow: 0 0 20px #00d9ff;
+    }
+
+    button:disabled {
+      opacity: 0.3;
+      cursor: default;
+      box-shadow: none;
+      border-color: #005577;
+    }
+
+    .controls-info {
+      color: #00a2ff;
+      font-size: 10px;
+      margin-top: 15px;
+    }
+  
+/* New screens use the original game's colours, font and controls. */
+:root { --accent: #00d9ff; --bg: #000814; }
+body { overflow: auto; padding: 28px 12px; isolation: isolate; }
+main { width: 100%; max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin: 0 auto 28px; }
+header h1 { text-align: center; width: 100%; margin: 12px auto 16px; font-size: clamp(28px, 6vw, 44px); }
+header p { margin: 0; }
+.eyebrow, .section-label, label { font-size: 10px; letter-spacing: 1.5px; color: #88e7ff; }
+.panel { padding: 24px; border: 1px solid #005577; background: rgba(0, 8, 20, .9); border-radius: 4px; box-shadow: 0 0 15px rgba(0,217,255,.15); }
+.modes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+.mode { min-height: 142px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px 12px; text-align: center; }
+.mode span { font-size: 9px; }
+.mode strong { font-size: 23px; }
+.mode small { font: 12px/1.6 sans-serif; letter-spacing: .5px; text-transform: none; color: #88e7ff; }
+.mode[aria-pressed=true] { border-color: #00d9ff; background: rgba(0,100,150,.35); box-shadow: 0 0 18px rgba(0,217,255,.45), inset 0 0 14px rgba(0,217,255,.12); }
+.mode:hover small { color: inherit; }
+.name-row { display: flex; gap: 12px; margin: 14px 0; }
+input { min-width: 0; flex: 1; padding: 14px; border: 1px solid #005577; border-radius: 2px; background: #02050f; color: white; font: 14px sans-serif; }
+input:focus-visible, button:focus-visible { outline: 2px solid #00d9ff; outline-offset: 3px; }
+.hint { font: 12px/1.7 sans-serif; letter-spacing: .4px; }
+#message { line-height: 1.7; }
+.arena-top, .hud, .arena-bottom, .help { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.arena-top, .hud { font-size: 10px; letter-spacing: 1px; margin-bottom: 14px; }
+.hud { color: #88e7ff; }
+.canvas-wrap { border: 2px solid #00d9ff; background: var(--bg); border-radius: 4px; box-shadow: 0 0 15px rgba(0,217,255,.5), inset 0 0 20px rgba(0,217,255,.25); overflow: hidden; }
+canvas { width: 100%; max-width: none; height: auto; }
+.arena-bottom { margin-top: 16px; }
+#status { line-height: 1.7; text-align: left; }
+.help { margin-top: 18px; font-size: 9px; color: #00a2ff; letter-spacing: 1px; }
+.help button { font-size: 9px; padding: 8px 12px; }
+.touch { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
+.touch button { width: 90px; font-size: 22px; touch-action: none; user-select: none; }
+footer { margin-top: 28px; font-size: 9px; line-height: 2; letter-spacing: 1px; color: #88e7ff; text-align: center; }
+footer span { margin: 0 10px; color: #00d9ff; }
+footer b { display: block; font: 11px/1.8 sans-serif; letter-spacing: .4px; }
+[hidden] { display: none !important; }
+@media(max-width:550px) { .panel { padding: 16px; } .modes { gap: 9px; } .mode strong { font-size: 18px; } .mode span { font-size: 8px; letter-spacing: 1px; } .name-row { flex-direction: column; } .hud { font-size: 8px; flex-wrap: wrap; } .help { flex-wrap: wrap; } .arena-top button { font-size: 8px; padding: 10px; } footer span { margin: 0 3px; } }
+@media(prefers-reduced-motion:reduce) { .bg-grid { animation: none; } button { transition: none; } }
+
+/* Infinite mode: dog and cat teams stay distinct at every environment level. */
+.teams { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 12px; margin: 0 0 12px; background: rgba(0,8,20,.9); border: 1px solid #005577; font-size: 11px; letter-spacing: 1px; }
+.teams .dogs { color: #00d9ff; text-shadow: 0 0 10px #00d9ff80; }
+.teams .cats { color: #ff9c38; text-shadow: 0 0 10px #ff9c3880; }
+.teams b { font-size: 20px; margin: 0 10px; }
+.team-versus { font-size: 8px; color: #88e7ff; }
+.animal-mode .canvas-wrap { border-left-color: #00d9ff; border-right-color: #ff9c38; }
+@media(max-width:550px) { .teams { font-size: 9px; flex-wrap: wrap; justify-content: center; } .team-versus { order: -1; width: 100%; } }
