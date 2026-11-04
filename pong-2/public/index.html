@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pong</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #000; color: #fff;
+      font-family: monospace; text-align: center; padding: 28px 12px; }
+    h1 { font-size: 28px; font-weight: normal; margin: 10px 0 20px; }
+    canvas { display: block; width: 100%; max-width: 600px; height: auto;
+      background: #000; border: 2px solid #fff; margin: 0 auto; }
+    p { font-size: 13px; margin: 15px 0; }
+    button { padding: 10px 20px; border: 1px solid #fff; background: #000;
+      color: #fff; font: inherit; cursor: pointer; }
+    button:disabled { opacity: 0.45; cursor: default; }
+  </style>
+</head>
+<body>
+  <h1>pong</h1>
+  <canvas id="game" width="600" height="400"></canvas>
+  <p id="role">connecting...</p>
+  <p id="status">waiting for players...</p>
+  <button id="start" type="button" disabled>Start Game</button>
+  <p>left: W / S &nbsp;&nbsp; right: ↑ / ↓</p>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const ctx = document.getElementById("game").getContext("2d");
+    const startButton = document.getElementById("start");
+    const status = document.getElementById("status");
+    const bgm = new Audio("/assets/bgm.mp3");
+    const winSound = new Audio("/assets/win.mp3");
+    const failSound = new Audio("/assets/fail.mp3");
+    const reboundSound = new Audio("/assets/rebound.mp3");
+    const held = new Set();
+    let role = "spectator";
+    let lastMove = 0;
+    let resultPlayed = false;
+    let resultPlaying = false;
+    bgm.loop = true;
+    bgm.volume = 0.2;
+    reboundSound.volume = 1.0;
+
+    function playBgm() {
+      if (resultPlaying || !bgm.paused) return;
+      bgm.play().catch(() => {});
+    }
+
+    function playResult(winner) {
+      if (role === "spectator") return;
+      const sound = winner === role ? winSound : failSound;
+      resultPlaying = true;
+      bgm.pause();
+      sound.currentTime = 0;
+      sound.play().catch(() => {
+        resultPlaying = false;
+        playBgm();
+      });
+    }
+
+    for (const sound of [winSound, failSound]) {
+      sound.addEventListener("ended", () => {
+        resultPlaying = false;
+        playBgm();
+      });
+    }
+
+    playBgm();
+    document.addEventListener("click", playBgm);
+
+    socket.on("role", (side) => {
+      role = side;
+      document.getElementById("role").textContent = "you are: " + side;
+      lastMove = 0;
+    });
+
+    socket.on("rebound", () => {
+      reboundSound.currentTime = 0;
+      reboundSound.play().catch(() => {});
+    });
+
+    socket.on("state", (game) => {
+      if (!game.gameOver) resultPlayed = false;
+      else if (!resultPlayed) {
+        resultPlayed = true;
+        playResult(game.winner);
+      }
+
+      const isReady = role !== "spectator" && game.ready[role];
+      if (game.playing) status.textContent = "playing";
+      else if (!game.connected) status.textContent = "waiting for two players...";
+      else if (game.gameOver) {
+        status.textContent = game.winner + " wins! " +
+          (isReady ? "waiting for the other player..." : "click restart to play again");
+      } else if (role === "spectator") status.textContent = "waiting for players to ready...";
+      else status.textContent = isReady ? "ready! waiting for the other player..." : "click start when ready";
+
+      startButton.textContent = game.playing ? "Playing..." :
+        game.gameOver ? (isReady ? "Ready..." : "Restart") :
+        isReady ? "Ready..." : "Start Game";
+      startButton.disabled = role === "spectator" || !game.connected || game.playing || isReady;
+      draw(game);
+    });
+
+    startButton.addEventListener("click", () => {
+      startButton.disabled = true;
+      socket.emit("start");
+    });
+
+    function draw(game) {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, 600, 400);
+      ctx.fillStyle = "#fff";
+
+      // Center line
+      for (let y = 0; y < 400; y += 24) ctx.fillRect(299, y, 2, 12);
+
+      // Score
+      ctx.font = "32px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(game.score.left, 235, 48);
+      ctx.fillText(game.score.right, 365, 48);
+
+      // Paddles and ball
+      ctx.fillRect(20, game.paddles.left, 10, 80);
+      ctx.fillRect(570, game.paddles.right, 10, 80);
+      ctx.beginPath();
+      ctx.arc(game.ball.x, game.ball.y, 7, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function sendMove() {
+      let direction = 0;
+      if (role === "left") direction = Number(held.has("s")) - Number(held.has("w"));
+      if (role === "right") direction = Number(held.has("ArrowDown")) - Number(held.has("ArrowUp"));
+      if (direction !== lastMove) {
+        lastMove = direction;
+        socket.emit("move", direction); // Client-side emit
+      }
+    }
+
+    function handleKey(e, down) {
+      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      if (!["w", "s", "ArrowUp", "ArrowDown"].includes(key)) return;
+      e.preventDefault();
+      if (down) held.add(key);
+      else held.delete(key);
+      sendMove();
+    }
+    document.addEventListener("keydown", e => handleKey(e, true));
+    document.addEventListener("keyup", e => handleKey(e, false));
+    window.addEventListener("blur", () => { held.clear(); sendMove(); });
+  </script>
+</body>
+</html>
